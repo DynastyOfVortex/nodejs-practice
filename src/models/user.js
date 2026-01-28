@@ -1,6 +1,4 @@
-const mysql = require("mysql2");
 const db = require("../config/db"); // пулл соединений
-console.log("Before Connection");
 
 class User {
   constructor(name, age) {
@@ -8,10 +6,23 @@ class User {
     this.age = age;
   }
 
+  static async getAll() {
+    try {
+      const sql = "SELECT * FROM users";
+      const [rows] = await db.execute(sql);
+      return rows;
+    } catch (error) {
+      console.error("Error fetching users:", error);
+      throw error;
+    }
+  }
   static async myTest() {
-    const rows = "SELECT name FROM mytable";
-    console.log(rows); // [{ name: 'John' }, { name: 'Maria' }, ...]
-    return await db.getall(rows);
+    const sql = "SELECT * FROM users";
+    db.query(sql, (err, rows) => {
+      if (err) throw err;
+      return console.log(rows); // [{ name: 'John' }, { name: 'Maria' }, ...]
+    });
+    // return await db.getall(rows);
   }
 
   static async createTable() {
@@ -24,16 +35,6 @@ class User {
       )
     `;
     return await db.execute(sql);
-  }
-  static async getAll() {
-    db.execute("SELECT * FROM users", function (err, data) {
-      if (err) return console.log(err);
-      console.log(`Data: ${data}`);
-      return data;
-    });
-    // const query = "SELECT * FROM users";
-    // const rows = await db.execute(query);
-    // return rows;
   }
 
   static async findById(id) {

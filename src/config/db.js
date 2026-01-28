@@ -17,8 +17,9 @@ connection.connect((error) => {
   else{
       console.log("Соединение c базой данных успешно установлено");
       // console.log(connection);
-      
   }
 });
 
-module.exports = connection;
+const promiceConnection = connection.promise();
+
+module.exports = promiceConnection;
